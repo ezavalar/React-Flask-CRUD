@@ -7,6 +7,8 @@ app = Flask(__name__)
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/pythonreactdb'
 mongo= PyMongo(app) #Conexión a mongodb
 
+CORS(app) #Habilitar CORS
+
 db= mongo.db.users #Seleccionar la base de datos y la colección users
 
 #Rutas
