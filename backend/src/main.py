@@ -28,11 +28,26 @@ def createUser():
 
 @app.route('/users', methods=['GET'])
 def getUser():
-    return "Buscar usuario GET"
+    usuarios=[]
+    for doc in db.find():
+        usuarios.append({
+            '_id': str(ObjectId(doc['_id'])),
+            'nombre': doc['nombre'],
+            'email': doc['email'],
+            'password': doc['password']
+        })
+    return jsonify(usuarios)
 
 @app.route('/users/<id>', methods=['GET'])
-def getUserById():
-    return "Buscar usuario GET por ID"
+def getUserById(id):
+    print(id)
+    usuario= db.find_one({'_id': ObjectId(id)})
+    return jsonify({
+        '_id': str(ObjectId(usuario['_id'])),
+        'nombre': usuario['nombre'],
+        'email': usuario['email'],
+        'password': usuario['password']
+    })
 
 @app.route('/users/<id>', methods=['GET'])
 def deleteUser():
