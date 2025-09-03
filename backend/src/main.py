@@ -40,7 +40,6 @@ def getUser():
 
 @app.route('/users/<id>', methods=['GET'])
 def getUserById(id):
-    print(id)
     usuario= db.find_one({'_id': ObjectId(id)})
     return jsonify({
         '_id': str(ObjectId(usuario['_id'])),
@@ -55,8 +54,13 @@ def deleteUser(id):
     return jsonify({"msg": "Usuario eliminado"}), 200
 
 @app.route('/users/<id>', methods=['PUT'])
-def updateUser():
-    return "Actualiza usuario PUT"
+def updateUser(id):
+    db.update_one({'_id': ObjectId(id)}, {'$set': {
+        'nombre': request.json['nombre'],
+        'email': request.json['email'],
+        'password': request.json['password']
+    }})
+    return jsonify({"msg": "Usuario actualizado"}), 200
 
 #Ejecuta App
 if __name__ == '__main__':
