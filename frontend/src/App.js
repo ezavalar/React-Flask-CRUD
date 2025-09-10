@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>   
       <Navbar />
-      <div>
+      <div className="container p-4">
         <Routes>
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Users />} />
