@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 const API= process.env.REACT_APP_API;
 
@@ -8,6 +8,9 @@ export const Users = () => {
     const[email, setEmail]= useState("");
     const[password, setPassword]= useState("");
     
+    const [users, setUsers]= useState([]);
+    
+    //Alta de usuarios
     const handleSubmit = async (e) => {
         e.preventDefault(); //Evita que se recargue la pagina
         
@@ -26,8 +29,21 @@ export const Users = () => {
 
         //Transformamos la respuesta a JSON y la mostramos en consola
         const data= await res.json();
-        console.log(data);
+        setUsers(data);
     }
+
+    //Listado de usuarios
+    const getUsers = async () => {
+        //Por defecto fetch hace peticiones GET
+        const res= await fetch(`${API}/users`);
+        const data= await res.json();
+        setUsers(data);
+    }
+
+    //UseEffect para que se ejecute getUsers cuando el componente es renderizado
+    useEffect(() => {
+        getUsers();
+    }, []);
     return (
         <div className="row mt-4">
             <div className="col-md-4">
@@ -66,7 +82,27 @@ export const Users = () => {
                 </form> 
             </div>
             <div className="col-md-8">
-
+                <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Operaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            users.map(user=>(
+                                <tr key={user._id}>
+                                    <td>{user.nombre}</td>
+                                    <td>{user.email}</td>
+                                    
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                        
+                </table>
             </div>
         </div>    
     )
