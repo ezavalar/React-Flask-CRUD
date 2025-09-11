@@ -7,29 +7,59 @@ export const Users = () => {
     const[nombre, setName]= useState("");
     const[email, setEmail]= useState("");
     const[password, setPassword]= useState("");
+
+    const [editing, setEditing]= useState(false);
+    const [id, setId]= useState("");
     
     const [users, setUsers]= useState([]);
     
     //Alta de usuarios
     const handleSubmit = async (e) => {
         e.preventDefault(); //Evita que se recargue la pagina
-        
-        //Peticion POST de la API
-        const res= await fetch(`${API}/users`, {
-            method: "POST",
-            headers:{
-                "Content-Type": "application/json" //Tipo de dato que se envia
-            },
-            body: JSON.stringify({ //Se debe de convertir el objeto a cadena
-                nombre, //Abreviatura de nombre: nombre
-                email, //Abreviatura de email: email
-                password //Abreviatura de password: password
-            })
-        });
 
-        //Transformamos la respuesta a JSON y refrescamos la lista de usuarios
-        await res.json();
+        if(!editing)
+        {
+            //Peticion POST de la API
+            const res= await fetch(`${API}/users`, {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json" //Tipo de dato que se envia
+                },
+                body: JSON.stringify({ //Se debe de convertir el objeto a cadena
+                    nombre, //Abreviatura de nombre: nombre
+                    email, //Abreviatura de email: email
+                    password //Abreviatura de password: password
+                })
+            });
+            await res.json(); //Espera la respuesta del servidor
+        }
+        else
+        {
+            //Peticion PUT de la API
+            const res= await fetch(`${API}/users/${id}`, {
+                method: "PUT",
+                headers:{
+                    "Content-Type": "application/json" //Tipo de dato que se envia
+                },
+                body: JSON.stringify({ //Se debe de convertir el objeto a cadena
+                    nombre, //Abreviatura de nombre: nombre
+                    email, //Abreviatura de email: email
+                    password //Abreviatura de password: password
+                })
+            
+            })
+            await res.json(); //Espera la respuesta del servidor
+            setEditing(false); //Cambia el estado del formulario a no editando
+            setId(""); //Limpia el id del usuario editado
+        }
+
+        //Refrescamos la lista de usuarios
         await getUsers();
+
+        //Limpiamos los campos del formulario
+        setName("");
+        setEmail("");
+        setPassword("");
     }
 
     //Listado de usuarios
@@ -60,9 +90,20 @@ export const Users = () => {
     }
 
     //Actualiza usuarios
-    const updateUser= (id)=>{
-        console.log(id);
+    const updateUser= async (id)=>{
+        const res= await fetch(`${API}/users/${id}`);
+        const data= await res.json();
+
+        //Cambia el estado del formulario a editando
+        setEditing(true);
+        setId(id); //Toma el id del usuario a editar
+
+        //Traslada los datos seleccionados al formulario
+        setName(data.nombre);
+        setEmail(data.email);
+        setPassword(data.password); 
     }
+
     return (
         <div className="row mt-4">
             <div className="col-md-4">
@@ -96,7 +137,7 @@ export const Users = () => {
                         />
                     </div>
                     <button className="btn btn-primary w-100">
-                        Guardar Datos
+                        {editing ? "Actualizar" : "Registrar"/*Si editing es true muestra Actualizar, si no Registrar*/}
                     </button>
                 </form> 
             </div>
