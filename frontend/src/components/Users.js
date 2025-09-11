@@ -96,7 +96,14 @@ export const Users = () => {
                                 <tr key={user._id}>
                                     <td>{user.nombre}</td>
                                     <td>{user.email}</td>
-                                    
+                                    <td>
+                                        <button className="btn btn-secondary btn-sm btn-block">
+                                            Actualizar
+                                        </button>
+                                        <button className="btn btn-danger btn-sm btn-block">
+                                            Eliminar
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         }
