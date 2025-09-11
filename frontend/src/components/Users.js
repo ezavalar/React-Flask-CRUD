@@ -29,7 +29,7 @@ export const Users = () => {
 
         //Transformamos la respuesta a JSON y refrescamos la lista de usuarios
         await res.json();
-        getUsers();
+        await getUsers();
     }
 
     //Listado de usuarios
@@ -47,11 +47,16 @@ export const Users = () => {
 
     //Borra usuarios
     const deleteUser= async (id)=>{
-       const res= await fetch(`${API}/users/${id}`, {
-            method: "DELETE"
-        });
-        await res.json();
-        await getUsers() //Refresca la lista de usuarios
+        const userResponse= window.confirm("¿Está seguro de eliminar el usuario?")
+        if(userResponse)
+        {
+            const res= await fetch(`${API}/users/${id}`, {
+                method: "DELETE"
+            });
+            await res.json();
+            await getUsers() //Refresca la lista de usuarios
+        }
+        
     }
 
     //Actualiza usuarios
