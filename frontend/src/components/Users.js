@@ -27,9 +27,9 @@ export const Users = () => {
             })
         });
 
-        //Transformamos la respuesta a JSON y la mostramos en consola
-        const data= await res.json();
-        setUsers(data);
+        //Transformamos la respuesta a JSON y refrescamos la lista de usuarios
+        await res.json();
+        getUsers();
     }
 
     //Listado de usuarios
@@ -44,6 +44,20 @@ export const Users = () => {
     useEffect(() => {
         getUsers();
     }, []);
+
+    //Borra usuarios
+    const deleteUser= async (id)=>{
+       const res= await fetch(`${API}/users/${id}`, {
+            method: "DELETE"
+        });
+        await res.json();
+        await getUsers() //Refresca la lista de usuarios
+    }
+
+    //Actualiza usuarios
+    const updateUser= (id)=>{
+        console.log(id);
+    }
     return (
         <div className="row mt-4">
             <div className="col-md-4">
@@ -97,10 +111,16 @@ export const Users = () => {
                                     <td>{user.nombre}</td>
                                     <td>{user.email}</td>
                                     <td>
-                                        <button className="btn btn-secondary btn-sm btn-block">
+                                        <button 
+                                            className="btn btn-secondary btn-sm btn-block"
+                                            onClick= {()=> updateUser(user._id)}
+                                        >
                                             Actualizar
                                         </button>
-                                        <button className="btn btn-danger btn-sm btn-block">
+                                        <button 
+                                            className="btn btn-danger btn-sm btn-block"
+                                            onClick= {()=> deleteUser(user._id)}
+                                        >
                                             Eliminar
                                         </button>
                                     </td>
